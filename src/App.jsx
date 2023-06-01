@@ -35,7 +35,7 @@ export const App = () => {
   };
 
   useEffect(() => {
-    setIsLoading(true);
+   
     setPage(2);
     fetchData();
   }, [query, page]);
