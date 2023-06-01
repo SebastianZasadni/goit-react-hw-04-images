@@ -18,14 +18,12 @@ export const App = () => {
   const [isModal, setIsModal] = useState(false);
   const [largeImg, setLargeImg] = useState(null);
   const [tags, setTags] = useState(null);
-  const [isLoadButton, setIsLoadButton] = useState(false);
 
   const fetchData = async () => {
     try {
       const newData = await fetchImages(query, page);
       if (newData.length) {
         setImages([...newData]);
-        setIsLoadButton(true);
       } else {
         setError({ message: 'Images not found.' });
       }
@@ -94,7 +92,7 @@ export const App = () => {
         )
       ) : isLoading ? (
         <Loader />
-      ) : isLoadButton && query ? (
+      ) : query ? (
         <div className={css.mainSection}>
           <ImageGallery images={images} openModal={openModal} />
           <Button onButton={loadMore} />
