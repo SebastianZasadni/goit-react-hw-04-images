@@ -21,7 +21,6 @@ export const App = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    setPage(2);
     const fetchData = async () => {
       try {
         const newData = await fetchImages(query, page);
@@ -38,7 +37,7 @@ export const App = () => {
     };
 
     fetchData();
-  }, [query, page]);
+  }, [query]);
 
   const openModal = (url, tags) => {
     setIsModal(true);
@@ -53,9 +52,9 @@ export const App = () => {
 
   const loadMore = async () => {
     setIsLoading(true);
-    setPage(page + 1);
+    const page = page;
     try {
-      const newData = await fetchImages(query, page);
+      const newData = await fetchImages(query, 2);
       setImages([...images, ...newData]);
     } catch (error) {
       setError(error);
@@ -86,7 +85,7 @@ export const App = () => {
       ) : (
         <Searchbar onSubmit={handleSubmit} />
       )}
-      {error ? (
+      {error && query ? (
         Notiflix.Notify.failure(
           `Whoops, something went wrong: ${error.message}`
         )
