@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import Notiflix from 'notiflix';
 
 import { ImageGallery } from 'components/ImageGallery/ImageGallery';
@@ -20,9 +20,9 @@ export const App = () => {
   const [tags, setTags] = useState(null);
   const [isLoadButton, setIsLoadButton] = useState(false);
 
-  const fetchData = async (query) => {
+  const fetchData = async () => {
     try {
-      const newData = await fetchImages(query,page);
+      const newData = await fetchImages(query, page);
       if (newData.length) {
         setImages([...newData]);
         setIsLoadButton(true);
@@ -37,13 +37,9 @@ export const App = () => {
   };
 
   useEffect(() => {
-    if (query) {
-      fetchData(query);
-      setIsLoading(true);
-      setPage(2);
-    } else {
-      setIsLoading(false);
-    }
+    fetchData();
+    setIsLoading(true);
+    setPage(2);
   }, [query]);
 
   const openModal = (url, tags) => {
@@ -75,6 +71,7 @@ export const App = () => {
     const form = evt.currentTarget;
     const searchedImages = form.elements.query.value;
     setQuery(searchedImages);
+    setPage(1);
     setError(null);
     form.reset();
   };
@@ -97,12 +94,12 @@ export const App = () => {
         )
       ) : isLoading ? (
         <Loader />
-      ) : (
+      ) : isLoadButton && query ? (
         <div className={css.mainSection}>
           <ImageGallery images={images} openModal={openModal} />
-          {isLoadButton ? <Button onButton={loadMore} /> : null}
+          <Button onButton={loadMore} />
         </div>
-      )}
+      ) : null}
     </>
   );
 };
