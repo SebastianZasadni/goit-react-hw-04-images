@@ -19,26 +19,26 @@ export const App = () => {
   const [largeImg, setLargeImg] = useState(null);
   const [tags, setTags] = useState(null);
 
-  const fetchData = async () => {
-    try {
-      const newData = await fetchImages(query, page);
-      if (newData.length) {
-        setImages([...newData]);
-      } else {
-        setError({ message: 'Images not found.' });
-      }
-    } catch (error) {
-      setIsLoading(false);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchData();
+    const fetchData = async () => {
+      try {
+        const newData = await fetchImages(query, page);
+        if (newData.length) {
+          setImages([...newData]);
+        } else {
+          setError({ message: 'Images not found.' });
+        }
+      } catch (error) {
+        setIsLoading(false);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     setIsLoading(true);
     setPage(2);
-  }, [query], fetchData);
+    fetchData();
+  }, [query]);
 
   const openModal = (url, tags) => {
     setIsModal(true);
