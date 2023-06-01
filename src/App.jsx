@@ -38,7 +38,7 @@ export const App = () => {
     setIsLoading(true);
     setPage(2);
     fetchData();
-  }, [query, page], [fetchData]);
+  }, [query, page]);
 
   const openModal = (url, tags) => {
     setIsModal(true);
