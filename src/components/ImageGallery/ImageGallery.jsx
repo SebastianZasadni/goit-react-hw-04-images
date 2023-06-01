@@ -8,14 +8,16 @@ import css from '../../Index.module.css';
 export const ImageGallery = ({ images, openModal }) => {
   return (
     <ul className={css.imageGallery}>
-      {images.map(i => (
+      {images ? (images.map(i => (
         <ImageGalleryItem
           key={nanoid()}
           smallImageUrl={i.previewURL}
           onPress={() => openModal(i.largeImageURL, i.tags)}
           tags={i.tags}
         />
-      ))}
+      ))) : (
+        null
+      )}
     </ul>
   );
 };
