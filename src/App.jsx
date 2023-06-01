@@ -82,12 +82,6 @@ export const App = () => {
 
   return (
     <>
-      <Searchbar onSubmit={handleSubmit} />
-      {error
-        ? Notiflix.Notify.failure(
-            `Whoops, something went wrong: ${error.message}`
-          )
-        : null}
       {isModal ? (
         <Modal
           largeImageUrl={largeImg}
@@ -95,6 +89,13 @@ export const App = () => {
           onEscDown={() => closeModal()}
           tags={tags}
         />
+      ) : (
+        <Searchbar onSubmit={handleSubmit} />
+      )}
+      {error ? (
+        Notiflix.Notify.failure(
+          `Whoops, something went wrong: ${error.message}`
+        )
       ) : isLoading ? (
         <Loader />
       ) : (
