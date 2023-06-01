@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Notiflix from 'notiflix';
-import PropTypes from 'prop-types';
 
 import { ImageGallery } from 'components/ImageGallery/ImageGallery';
 import { Loader } from 'components/Loader/Loader';
