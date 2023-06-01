@@ -20,12 +20,12 @@ export const App = () => {
   const [tags, setTags] = useState(null);
 
   useEffect(() => {
-    setIsLoading(true);
     const fetchData = async () => {
       try {
-        const newData = await fetchImages(query, page);
+        const newData = await fetchImages(query, 1);
         if (newData.length) {
           setImages([...newData]);
+          setPage(2);
         } else {
           setError({ message: 'Images not found.' });
         }
@@ -35,7 +35,7 @@ export const App = () => {
         setIsLoading(false);
       }
     };
-
+    setIsLoading(true);
     fetchData();
   }, [query]);
 
@@ -52,9 +52,9 @@ export const App = () => {
 
   const loadMore = async () => {
     setIsLoading(true);
-    const page = page;
+    setPage(page + 1);
     try {
-      const newData = await fetchImages(query, 2);
+      const newData = await fetchImages(query, page);
       setImages([...images, ...newData]);
     } catch (error) {
       setError(error);
@@ -68,7 +68,6 @@ export const App = () => {
     const form = evt.currentTarget;
     const searchedImages = form.elements.query.value;
     setQuery(searchedImages);
-    setPage(1);
     setError(null);
     form.reset();
   };
@@ -85,7 +84,7 @@ export const App = () => {
       ) : (
         <Searchbar onSubmit={handleSubmit} />
       )}
-      {error && query ? (
+      {error ? (
         Notiflix.Notify.failure(
           `Whoops, something went wrong: ${error.message}`
         )
