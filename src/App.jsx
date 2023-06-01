@@ -20,9 +20,9 @@ export const App = () => {
   const [tags, setTags] = useState(null);
   const [isLoadButton, setIsLoadButton] = useState(false);
 
-  const fetchData = async () => {
+  const fetchData = async (query) => {
     try {
-      const newData = await fetchImages(query, page);
+      const newData = await fetchImages(query,page);
       if (newData.length) {
         setImages([...newData]);
         setIsLoadButton(true);
@@ -38,7 +38,7 @@ export const App = () => {
 
   useEffect(() => {
     if (query) {
-      fetchData();
+      fetchData(query);
       setIsLoading(true);
       setPage(2);
     } else {
