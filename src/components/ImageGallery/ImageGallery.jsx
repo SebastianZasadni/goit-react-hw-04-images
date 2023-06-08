@@ -8,16 +8,16 @@ import css from '../../Index.module.css';
 export const ImageGallery = ({ images, openModal }) => {
   return (
     <ul className={css.imageGallery}>
-      {images ? (images.map(i => (
-        <ImageGalleryItem
-          key={nanoid()}
-          smallImageUrl={i.previewURL}
-          onPress={() => openModal(i.largeImageURL, i.tags)}
-          tags={i.tags}
-        />
-      ))) : (
-        null
-      )}
+      {images
+        ? images.map(i => (
+            <ImageGalleryItem
+              key={nanoid()}
+              smallImageUrl={i.previewURL}
+              onPress={() => openModal(i.largeImageURL, i.tags)}
+              tags={i.tags}
+            />
+          ))
+        : null}
     </ul>
   );
 };
@@ -30,5 +30,5 @@ ImageGallery.propTypes = {
       id: PropTypes.number.isRequired,
     })
   ),
-openModal: PropTypes.func.isRequired
+  openModal: PropTypes.func.isRequired,
 };

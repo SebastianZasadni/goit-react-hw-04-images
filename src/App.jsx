@@ -12,20 +12,26 @@ import { Searchbar } from 'components/SearchBar/Searchbar';
 export const App = () => {
   const [images, setImages] = useState(null);
   const [query, setQuery] = useState(null);
+  const [totalPages, setTotalPages] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [page, setPage] = useState(null);
   const [isModal, setIsModal] = useState(false);
   const [largeImg, setLargeImg] = useState(null);
   const [tags, setTags] = useState(null);
+  const [showLoadMore, setShowLoadMore] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const newData = await fetchImages(query, 1);
+        const response = await fetchImages(query, 1);
+        const newData = response.data.hits;
+        const pages = Math.round(response.data.totalHits / 12);
         if (newData.length) {
           setImages([...newData]);
-          setPage(2);
+          setTotalPages(pages);
+          setPage(1);
+          setShowLoadMore(true);
         } else {
           setError({ message: 'Images not found.' });
         }
@@ -39,6 +45,22 @@ export const App = () => {
     fetchData();
   }, [query]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetchImages(query, page);
+        const newData = response.data.hits;
+        setImages([...images, ...newData]);
+      } catch (error) {
+        setIsLoading(false);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    setIsLoading(true);
+    fetchData();
+  }, [page]);
+
   const openModal = (url, tags) => {
     setIsModal(true);
     setLargeImg(url);
@@ -50,26 +72,18 @@ export const App = () => {
     setLargeImg(null);
   };
 
-  const loadMore = async () => {
+  const loadHandle = () => {
     setIsLoading(true);
     setPage(page + 1);
-    try {
-      const newData = await fetchImages(query, page);
-      setImages([...images, ...newData]);
-    } catch (error) {
-      setError(error);
-    } finally {
-      setIsLoading(false);
+    if (page === totalPages) {
+      Notiflix.Notify.failure('There is no more pictures.');
+      setShowLoadMore(false);
     }
   };
 
-  const handleSubmit = evt => {
-    evt.preventDefault();
-    const form = evt.currentTarget;
-    const searchedImages = form.elements.query.value;
+  const handleSubmit = searchedImages => {
     setQuery(searchedImages);
     setError(null);
-    form.reset();
   };
 
   return (
@@ -82,7 +96,7 @@ export const App = () => {
           tags={tags}
         />
       ) : (
-        <Searchbar onSubmit={handleSubmit} />
+        <Searchbar handleSubmit={handleSubmit} />
       )}
       {error ? (
         Notiflix.Notify.failure(
@@ -93,7 +107,7 @@ export const App = () => {
       ) : query ? (
         <div className={css.mainSection}>
           <ImageGallery images={images} openModal={openModal} />
-          <Button onButton={loadMore} />
+          {showLoadMore ? <Button onButton={loadHandle} /> : null}
         </div>
       ) : null}
     </>

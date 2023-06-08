@@ -1,8 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import css from '../../Index.module.css';
 
-export const Searchbar = ({ onSubmit }) => {
+export const Searchbar = ({ handleSubmit }) => {
+  const [query, setQuery] = useState('');
+
+  const inputQueryHandle = e => setQuery(e.target.value);
+
+  const onSubmit = evt => {
+    evt.preventDefault();
+    if (!query) return;
+    handleSubmit(query);
+    setQuery('');
+  };
+
   return (
     <header className={css.searchBar}>
       <form className={css.searchForm} onSubmit={onSubmit}>
@@ -17,7 +28,9 @@ export const Searchbar = ({ onSubmit }) => {
           autoFocus
           placeholder="Search image and photos"
           id="search-input"
-        ></input>
+          value={query}
+          onChange={inputQueryHandle}
+        />
       </form>
     </header>
   );
