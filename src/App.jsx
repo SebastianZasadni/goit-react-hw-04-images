@@ -48,16 +48,16 @@ export const App = () => {
       try {
         const response = await fetchImages(query, page);
         const newData = response.data.hits;
-        setImages([...images, ...newData]);
+        return setImages([...images, ...newData]);
       } catch (error) {
-        setIsLoading(false);
+        return setIsLoading(false);
       } finally {
-        setIsLoading(false);
+        return setIsLoading(false);
       }
     };
     setIsLoading(true);
     fetchData();
-  }, [page, query]);
+  }, [page]);
 
   const openModal = (url, tags) => {
     setIsModal(true);
