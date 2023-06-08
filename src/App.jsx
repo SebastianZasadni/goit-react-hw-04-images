@@ -48,11 +48,11 @@ export const App = () => {
       try {
         const response = await fetchImages(query, page);
         const newData = response.data.hits;
-        return setImages([...images, ...newData]);
+        setImages(prevImages => [...prevImages, ...newData]);
       } catch (error) {
-        return setIsLoading(false);
+        setIsLoading(false);
       } finally {
-        return setIsLoading(false);
+        setIsLoading(false);
       }
     };
     setIsLoading(true);
