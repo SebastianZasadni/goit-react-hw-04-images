@@ -19,7 +19,6 @@ export const App = () => {
   const [isModal, setIsModal] = useState(false);
   const [largeImg, setLargeImg] = useState(null);
   const [tags, setTags] = useState(null);
-  const [showLoadMore, setShowLoadMore] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,7 +30,6 @@ export const App = () => {
           setImages([...newData]);
           setTotalPages(pages);
           setPage(1);
-          setShowLoadMore(true);
         } else {
           setError({ message: 'Images not found.' });
         }
@@ -75,10 +73,6 @@ export const App = () => {
   const loadHandle = () => {
     setIsLoading(true);
     setPage(page + 1);
-    if (page === totalPages) {
-      Notiflix.Notify.failure('There is no more pictures.');
-      setShowLoadMore(false);
-    }
   };
 
   const handleSubmit = searchedImages => {
@@ -107,7 +101,7 @@ export const App = () => {
       ) : query ? (
         <div className={css.mainSection}>
           <ImageGallery images={images} openModal={openModal} />
-          {showLoadMore ? <Button onButton={loadHandle} /> : null}
+          {page !== totalPages ? <Button onButton={loadHandle} /> : null}
         </div>
       ) : null}
     </>
