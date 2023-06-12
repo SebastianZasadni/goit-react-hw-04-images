@@ -19,17 +19,22 @@ export const App = () => {
   const [isModal, setIsModal] = useState(false);
   const [largeImg, setLargeImg] = useState(null);
   const [tags, setTags] = useState(null);
-
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetchImages(query, 1);
+        const response = await fetchImages(query, page);
         const newData = response.data.hits;
         const pages = Math.round(response.data.totalHits / 12);
         if (newData.length) {
-          setImages([...newData]);
-          setTotalPages(pages);
-          setPage(1);
+          if (!isFormSubmitted && query) {
+            setImages(prevImages => [...prevImages, ...newData]);
+          } else {
+            setImages([...newData]);
+            setTotalPages(pages);
+            setIsFormSubmitted(false);
+          }
         } else {
           setError({ message: 'Images not found.' });
         }
@@ -37,27 +42,12 @@ export const App = () => {
         setIsLoading(false);
       } finally {
         setIsLoading(false);
+        setIsFormSubmitted(false);
       }
     };
     setIsLoading(true);
     fetchData();
-  }, [query]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetchImages(query, page);
-        const newData = response.data.hits;
-        setImages(prevImages => [...prevImages, ...newData]);
-      } catch (error) {
-        setIsLoading(false);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    setIsLoading(true);
-    fetchData();
-  }, [page, query]);
+  }, [query, page]);
 
   const openModal = (url, tags) => {
     setIsModal(true);
@@ -73,11 +63,14 @@ export const App = () => {
   const loadHandle = () => {
     setIsLoading(true);
     setPage(page + 1);
+    setIsFormSubmitted(false);
   };
 
   const handleSubmit = searchedImages => {
     setQuery(searchedImages);
+    setPage(1);
     setError(null);
+    setIsFormSubmitted(true);
   };
 
   return (
